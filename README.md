@@ -1,4 +1,4 @@
-# Ruby on Rails and Elasticsearch persistence: Example application
+## Ruby on Rails and Elasticsearch persistence: Example application
 
 ### Building
 
