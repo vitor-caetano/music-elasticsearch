@@ -6,6 +6,11 @@
 rails new music --force --skip --skip-bundle --skip-active-record --template https://raw.githubusercontent.com/vitor-caetano/music-elasticsearch/master/music.template.rb
 ```
 
+### Running
+```
+ELASTICSEARCH_URL=http://localhost:9200 rails server --port=3000
+```
+
 ### Query with suggest
 
 ```
