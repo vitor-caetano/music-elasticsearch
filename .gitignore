@@ -18,3 +18,5 @@
 
 .byebug_history
 vendor/elasticsearch-5.2.1/
+
+.idea
