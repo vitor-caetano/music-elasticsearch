@@ -1,22 +1,8 @@
-<%= form_with(model: artist, local: true) do |form| %>
-  <% if artist.errors.any? %>
-    <div id="error_explanation">
-      <h2><%= pluralize(artist.errors.count, "error") %> prohibited this artist from being saved:</h2>
+<%= simple_form_for @artist do |f| %>
+  <%= f.input :name %>
+  <%= f.input :profile, as: :text %>
+  <%= f.input :date, as: :date %>
+  <%= f.input :members, hint: 'Separate names by comma', input_html: { value: f.object.members.join(', ') } %>
 
-      <ul>
-      <% artist.errors.full_messages.each do |message| %>
-        <li><%= message %></li>
-      <% end %>
-      </ul>
-    </div>
-  <% end %>
-
-  <div class="field">
-    <%= form.label :name %>
-    <%= form.text_field :name, id: :artist_name %>
-  </div>
-
-  <div class="actions">
-    <%= form.submit %>
-  </div>
+  <%= f.button :submit %>
 <% end %>

@@ -1,33 +1,30 @@
 class ArtistsController < ApplicationController
   before_action :set_artist, only: [:show, :edit, :update, :destroy]
 
-  # GET /artists
-  # GET /artists.json
+  rescue_from Elasticsearch::Persistence::Repository::DocumentNotFound do
+    render file: "public/404.html", status: 404, layout: false
+  end
+
   def index
-    @artists = Artist.all
+    @artists = Artist.all sort: 'name.raw', _source: ['name', 'album_count']
   end
 
-  # GET /artists/1
-  # GET /artists/1.json
   def show
+    @albums = @artist.albums
   end
 
-  # GET /artists/new
   def new
     @artist = Artist.new
   end
 
-  # GET /artists/1/edit
   def edit
   end
 
-  # POST /artists
-  # POST /artists.json
   def create
     @artist = Artist.new(artist_params)
 
     respond_to do |format|
-      if @artist.save
+      if @artist.save refresh: true
         format.html { redirect_to @artist, notice: 'Artist was successfully created.' }
         format.json { render :show, status: :created, location: @artist }
       else
@@ -37,11 +34,9 @@ class ArtistsController < ApplicationController
     end
   end
 
-  # PATCH/PUT /artists/1
-  # PATCH/PUT /artists/1.json
   def update
     respond_to do |format|
-      if @artist.update(artist_params)
+      if @artist.update(artist_params, refresh: true)
         format.html { redirect_to @artist, notice: 'Artist was successfully updated.' }
         format.json { render :show, status: :ok, location: @artist }
       else
@@ -51,10 +46,8 @@ class ArtistsController < ApplicationController
     end
   end
 
-  # DELETE /artists/1
-  # DELETE /artists/1.json
   def destroy
-    @artist.destroy
+    @artist.destroy refresh: true
     respond_to do |format|
       format.html { redirect_to artists_url, notice: 'Artist was successfully destroyed.' }
       format.json { head :no_content }
@@ -62,13 +55,13 @@ class ArtistsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
     def set_artist
-      @artist = Artist.find(params[:id])
+      @artist = Artist.find(params[:id].split('-').first)
     end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
     def artist_params
-      params.require(:artist).permit(:name)
+      a = params.require(:artist)
+      a[:members] = a[:members].split(/,\s?/) unless a[:members].is_a?(Array) || a[:members].blank?
+      return a
     end
 end
