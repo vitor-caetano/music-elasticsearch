@@ -7,6 +7,11 @@ class Suggester
 
   def response
     @response ||= begin
+      #
+      # http://www.rubydoc.info/gems/elasticsearch-api/Elasticsearch/API/Actions#search-instance_method
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-request-body.html
+      # https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters-completion.html
+      #
       Elasticsearch::Persistence.client.search \
       index: Artist.index_name,
       body: {
